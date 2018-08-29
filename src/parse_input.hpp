@@ -8,6 +8,14 @@ using namespace std;
 #define SHARK 2
 
 typedef struct {
+
+  int species; 
+  double **genome;
+}specimen;
+
+
+
+typedef struct {
   int L;
   int N; // number of genes
   int n; // number of phenotypes
