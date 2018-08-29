@@ -15,13 +15,7 @@ srand(time(NULL));   // should only be called once
 #define predation_inibitor = 0
 
 
-typedef struct specimen{
-
-  int species;
-  double **genome;
-}specimen;
-
-struct planet** waTor(struct options, int N_fish0, int N_shark0,   int init_config**, bool initialize = true, bool progress_bar = false){        
+specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bool initialize = true, bool progress_bar = false){        
 
   int N_step = options.N_step;
   int L = options.L;
