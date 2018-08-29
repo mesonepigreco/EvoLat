@@ -6,20 +6,20 @@
 #include "parse_input.hpp"
 #include "genome.hpp"
 
-srand(time(NULL));   // should only be called once
+//srand(time(NULL));   // should only be called once
 
-#define fish_filiation_inibitor = 0
-#define fish_rw_inibitor = 0
-#define shark_filiation_inibitor = 0
-#define shark_rw_inibitor = 0
-#define predation_inibitor = 0
+#define fish_filiation_inibitor  0
+#define fish_rw_inibitor  0
+#define shark_filiation_inibitor  0
+#define shark_rw_inibitor  0
+#define predation_inibitor  0
 
 
-specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bool initialize = true, bool progress_bar = false){        
+specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_config, bool initialize = true, bool progress_bar = false){        
 
-  int N_step = options.N_step;
-  int L = options.L;
-  int N_mutations = options.N_mutations;
+  int N_step = opt.N_steps;
+  int L = opt.L;
+  int N_mutations = opt.N_mutations;
   
   //equating specimen numbers
   int  N_fish=N_fish0;
@@ -29,11 +29,13 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
   
   
   bool IsSpecimentSelected;
-  int Site1_Species;
+  int Site1_Species, Site2_Species;
   double **Site1_Genes;
   double p_move_f, p_filiation_f;
   double p_move_s,  p_filiation_s, p_death_s; 
   int newPos_x, newPos_y;
+
+  double prob_m, prob_d, prob_f;
   
   //creating lattice
   specimen **planet = (specimen**) calloc(L, sizeof(specimen*));
@@ -54,13 +56,13 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
     //setting initial fishes
     while(count <= (N_fish0-1)){
     
-      tmp_x= (int) lrand48*(L-1.)/RAND_MAX;
-      tmp_y= (int) lrand48*(L-1.)/RAND_MAX;
+      tmp_x= rand() % L;
+      tmp_y=  rand() % L;
       
       if(planet[tmp_x][tmp_y].species == EMPTY){
 	
 	planet[tmp_x][tmp_y].species = FISH;
-	planet[tmp_x][tmp_y].genome = genomeInitialAssigment(FISH, n,N);
+	genomeInitialAssignment(FISH, opt, planet[tmp_x][tmp_y].genome);
 	count++;
       };
     };
@@ -73,13 +75,12 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
     
     while(count < (N_shark)){
       
-      tmp_x= (int) lrand48*(L-1.)/RAND_MAX;
-      tmp_y= (int) lrand48*(L-1.)/RAND_MAX;
-      
+      tmp_x= rand() % L;
+      tmp_y=  rand() % L;
       if (planet[tmp_x][tmp_y].species == EMPTY){
 	
 	planet[tmp_x][tmp_y].species = SHARK;
-	genomeInitialAssigment(SHARK, opt, planet[tmp_x][tmp_y].genome);
+	genomeInitialAssignment(SHARK, opt, planet[tmp_x][tmp_y].genome);
 	count += 1;
       };	
     };
@@ -90,6 +91,7 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
   //print "running"
   // running time
   int print_all_counter = 0;
+  double prob;
   
   for(int t = 0; t < N_step; t++){
     
@@ -105,8 +107,8 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
 
       
       // extrancting a position in the LxL lattice...
-      tmp_x= (int) lrand48*(L-1.)/RAND_MAX;
-      tmp_y= (int) lrand48*(L-1.)/RAND_MAX;
+      tmp_x= rand() % L;
+      tmp_y= rand() % L;
       
       IsSpecimentSelected = !(planet[tmp_x][tmp_y].species ==EMPTY);
       if(!IsSpecimentSelected){
@@ -121,7 +123,7 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
 	
 	p_move_f = GetSinglePheno(planet[tmp_x][tmp_y], 0, opt); //  np.mean(Site1_Genes[0,:])
 	p_filiation_f = GetSinglePheno(planet[tmp_x][tmp_y], 1, opt); //np.mean(Site1_Genes[1,:])
-	prob = lrand48/((double) RAND_MAX);
+	prob = rand()/((double) RAND_MAX);
 	
 	if(prob <= (p_move_f+p_filiation_f)){
 	  
@@ -132,7 +134,7 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
 	  if(Site2_Species == EMPTY && prob > p_move_f && prob <= (p_filiation_f+p_move_f) && fish_filiation_inibitor == 0){
 	    //filiation
 	    
-	    Mithosys(planet[tmp_x, tmp_y], opt, &planet[tmp_x][tmp_y], &planet[newPos_x][newPos_y]);
+	    Mythosis(planet[tmp_x][ tmp_y], opt, &planet[tmp_x][tmp_y], &planet[newPos_x][newPos_y]);
 	    N_fish_t += 1;
 	    
 	  }else if(Site2_Species == EMPTY && fish_rw_inibitor == 0){
@@ -151,9 +153,9 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
 	p_filiation_s = GetSinglePheno(planet[tmp_x][tmp_y], 1, opt); //#np.mean(Site1_Genes[1,:])
 	p_death_s = GetSinglePheno(planet[tmp_x][tmp_y], 2, opt); //#np.mean(Site1_Genes[2,:])
 	
-	prob_m = lrand48/((double) RAND_MAX);
-	prob_f = lrand48/((double) RAND_MAX);
-	prob_d = lrand48/((double) RAND_MAX);
+	prob_m = rand()/((double) RAND_MAX);
+	prob_f = rand()/((double) RAND_MAX);
+	prob_d = rand()/((double) RAND_MAX);
 	
 	if(prob_m >= p_move_s && prob_d < p_death_s){
 	  //shark spontaneous death 
@@ -170,7 +172,7 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
 	  
 	  if(Site2_Species == FISH && prob_f <= p_filiation_s && shark_filiation_inibitor == 0  && predation_inibitor == 0){
 	    //shark filiation with predation
-	    Mithosys(planet[tmp_x][tmp_y], opt, &planet[tmp_x][tmp_y], &planet[newPos_x][newPos_y]);
+	    Mythosis(planet[tmp_x][tmp_y], opt, &planet[tmp_x][tmp_y], &planet[newPos_x][newPos_y]);
 	    N_shark_t += 1;
 	    N_fish_t -= 1;
 	    
@@ -190,7 +192,7 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   int init_config**, bo
 	    planet[newPos_x][newPos_y].species = SHARK;
 	    planet[tmp_x][tmp_y].species = EMPTY;
 	    planet[newPos_x][newPos_y].genome = Site1_Genes;
-	    planet[tmp_x][tmp_y]genome = NULL;
+	    planet[tmp_x][tmp_y].genome = NULL;
 	    
 	    
 	    if(prob_d < (p_death_s)){

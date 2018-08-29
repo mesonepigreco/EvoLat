@@ -1,5 +1,9 @@
 #include <string>
 #include <random>
+#include <iostream>
+
+#ifndef PARSE_INPUT_D
+#define PARSE_INPUT_D
 
 using namespace std;
 
@@ -37,7 +41,7 @@ typedef struct {
   double m_fm, m_ff, m_sm, m_sf, m_sd;
 
   // The starting phenotypes
-  double p_ff, p_sf, p_sd, p_fm;
+  double p_ff, p_sf, p_sd, p_fm, p_sm;
 
   // Here the random generator
   std::default_random_engine gen; // The
@@ -50,3 +54,4 @@ typedef struct {
  * an options structure
  */
 options read_input(string filename);
+#endif

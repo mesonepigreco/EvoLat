@@ -1,5 +1,7 @@
 #include "parse_input.hpp"
 
+#ifndef GENOME_D
+#define GENOME_D
 /*
  * This file contains the genome of the simulation
  */
@@ -21,3 +23,4 @@ void copyPlanet(specimen ** original, specimen ** dest, options opt);
 void cleanGenome(double ** genome, options opt); // Death, the result is null
 
 void randomMove(int tmp_x, int tmp_y, int L, int * dest_x, int * dest_y) ;
+#endif

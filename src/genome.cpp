@@ -6,17 +6,19 @@ void genomeInitialAssignment(int Species, options opt, double ** &genome) {
   // Initialize the array
   genome = (double**) malloc(sizeof(double*) * opt.n);
   for (int i = 0; i < opt.n; ++i)
-    genome[i] = (double) calloc(sizeof(double) * opt.N);
+    genome[i] = (double*) malloc(sizeof(double) * opt.N);
 
   if (Species == FISH) {
     for (int i = 0; i < opt.N; ++i) {
-      genome[0, i] = opt.p_ff;
-      genome[1, i] = opt.p_fm;
+      genome[0][ i] = opt.p_ff;
+      genome[1][i] = opt.p_fm;
     }
   } else if (Species == SHARK) {
-      genome[0, i] = opt.p_sm;
-      genome[1, i] = opt.p_sf;
-      genome[2, i] = opt.p_sd;
+    for (int i = 0; i < opt.N; ++i) {
+      genome[0][ i] = opt.p_sm;
+      genome[1][ i] = opt.p_sf;
+      genome[2][ i] = opt.p_sd;
+    }
   }
 }
 
@@ -54,7 +56,7 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   poisson_distribution<int> pdist(opt.N_mutations);
 
   g1->species = kind;
-  g1->genome = genomeMatrix;
+  g1->genome = parent.genome;
 
   // Allocate the second genome
   copyGenome(parent.genome, g2->genome, opt);
@@ -72,7 +74,7 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
     else if (kind == SHARK)
       pheno = rand() % 3;
 
-    g1->genome[pheno, gene_x] = P_mut(kind, pheno, opt);
+    g1->genome[pheno][ gene_x] = P_mut(kind, pheno, opt);
   }
   
   // Mutate the second genome
@@ -85,7 +87,7 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
     else if (kind == SHARK)
       pheno = rand() % 3;
 
-    g2->genome[pheno, gene_x] = P_mut(kind, pheno, opt);
+    g2->genome[pheno][ gene_x] = P_mut(kind, pheno, opt);
   }
 }
 
@@ -95,14 +97,14 @@ double GetSinglePheno(specimen element, int phenotype, options opt) {
   if (opt.EVOLUTION_TYPE.compare("uniform")) {
     ret = 0;
     for (int i = 0; i < opt.N; ++i) {
-      ret += element.genome[phenotype, i];
+      ret += element.genome[phenotype][ i];
     }
     ret /= opt.N;
   } else {
     cerr << "ERROR, EVOLUTION_TYPE = " << opt.EVOLUTION_TYPE << " not yet implemented." << endl;
     exit(EXIT_FAILURE);
   }
-  return N;
+  return ret;
 }
 
 
