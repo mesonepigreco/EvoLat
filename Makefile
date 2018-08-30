@@ -3,8 +3,8 @@ GSLFLAGS = -lgsl -lgslcblas
 CPPFLAGS = -std=c++11
 
 
-lib/wator.o: src/waTor.cpp src/waTor.hpp lib/genome.o lib/parse_input.o
-	g++ -O3 -fPIC $(CPPFLAGS)  -c src/waTor.cpp -o lib/wator.o
+bin/wator.exe: src/main.cpp lib/parse_input.o lib/genome.o lib/wator.o
+	g++ -O3 -fPIC $(CPPFLAGS) src/main.cpp lib/wator.o lib/parse_input.o lib/genome.o -o bin/wator.exe
 
 
 lib/parse_input.o: src/parse_input.cpp src/parse_input.hpp

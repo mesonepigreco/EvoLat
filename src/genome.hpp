@@ -22,5 +22,7 @@ void copyGenome(double ** original, double ** dest, options opt);
 void copyPlanet(specimen ** original, specimen ** dest, options opt);
 void cleanGenome(double ** genome, options opt); // Death, the result is null
 
+void savePlanet(char* filename, options opt, specimen ** planet);
+
 void randomMove(int tmp_x, int tmp_y, int L, int * dest_x, int * dest_y) ;
 #endif

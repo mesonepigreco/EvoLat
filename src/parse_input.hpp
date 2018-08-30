@@ -19,6 +19,7 @@ typedef struct {
 
 
 
+
 typedef struct {
   int L;
   int N; // number of genes
