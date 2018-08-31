@@ -1,10 +1,10 @@
 # Numpy location
 GSLFLAGS = -lgsl -lgslcblas
 CPPFLAGS = -std=c++11
-
+LIBS=`pkg-config --libs libconfig++` -lm
 
 bin/wator.exe: src/main.cpp lib/parse_input.o lib/genome.o lib/wator.o
-	g++ -O3 -fPIC $(CPPFLAGS) src/main.cpp lib/wator.o lib/parse_input.o lib/genome.o -o bin/wator.exe
+	g++ -O3 -fPIC $(CPPFLAGS)  src/main.cpp  -o bin/wator.exe lib/wator.o lib/parse_input.o lib/genome.o $(LIBS) 
 
 
 lib/parse_input.o: src/parse_input.cpp src/parse_input.hpp

@@ -1,5 +1,5 @@
 #include "genome.hpp"
-
+#define DEBUG_GEN 1
 
 
 void genomeInitialAssignment(int Species, options opt, double ** &genome) {
@@ -12,6 +12,7 @@ void genomeInitialAssignment(int Species, options opt, double ** &genome) {
     for (int i = 0; i < opt.N; ++i) {
       genome[0][ i] = opt.p_ff;
       genome[1][i] = opt.p_fm;
+      genome[2][i] = 0;
     }
   } else if (Species == SHARK) {
     for (int i = 0; i < opt.N; ++i) {
@@ -56,9 +57,15 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   poisson_distribution<int> pdist(opt.N_mutations);
 
   g1->species = kind;
+  g2->species = kind;
   g1->genome = parent.genome;
-
-  // Allocate the second genome
+  
+  if (g2->genome != NULL) {
+    if (DEBUG_GEN) cout <<  "      killing and reallocating " << g2->genome << endl;
+    FreeGenome(g2->genome, opt);
+  }
+  
+  // Allocate the second genome and copy
   copyGenome(parent.genome, g2->genome, opt);
 
   int gene_x;
@@ -94,9 +101,13 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
 
 double GetSinglePheno(specimen element, int phenotype, options opt) {
   double ret;
-  if (opt.EVOLUTION_TYPE.compare("uniform")) {
+  if (opt.EVOLUTION_TYPE.compare("uniform") == 0) {
     ret = 0;
     for (int i = 0; i < opt.N; ++i) {
+      if (DEBUG_GEN) {
+	//cout << "         [GET SINGLE PHENO ] i = " << i << endl;
+	//cout << "                             gene = " << element.genome[phenotype][ i] << endl;
+      }
       ret += element.genome[phenotype][ i];
     }
     ret /= opt.N;
@@ -146,3 +157,34 @@ void randomMove(int tmp_x, int tmp_y, int L, int * dest_x, int * dest_y) {
   *dest_y = newPos_y;
 }
 
+
+void copyGenome(double ** original, double ** &dest, options opt) {
+  // Allocate the genome
+  dest = (double ** )malloc(sizeof(double*) * opt.n);
+  if (DEBUG_GEN) cout << "    GENOME ALLOCATION : " << dest << endl;
+  for (int i = 0; i < opt.n; ++i) {
+    dest[i] = (double*) malloc(sizeof(double) * opt.N);
+    if (DEBUG_GEN) cout << "                    : undergene i = " << i << " = " << dest[i] << endl;
+    for (int j = 0; j < opt.N; ++j) {
+      dest[i][j] = original[i][j];
+    }
+  }
+}
+
+
+void copyPlanet(specimen ** original, specimen ** dest, options opt) {
+  for (int x = 0; x < opt.L; ++x) {
+    for (int y = 0; y < opt.L; ++y) {
+      dest[x][y].species = original[x][y].species;
+      copyGenome(original[x][y].genome, dest[x][y].genome, opt);
+    }
+  } 
+}
+
+void FreeGenome(double ** genome, options opt) {
+  for (int i = 0; i < opt.n; ++i) {
+    if (DEBUG_GEN) cout << "killing " << i << " pointer " << genome[i] <<  endl;
+    free(genome[i]);
+  }
+  free(genome);
+}

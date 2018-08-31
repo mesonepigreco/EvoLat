@@ -18,11 +18,17 @@ double GetSinglePheno(specimen element, int phenotype, options opt);
 
 double P_mut(int kind, int pheno, options opt) ;
 
-void copyGenome(double ** original, double ** dest, options opt);
+// Copy the genom into the dest that is also allocated
+void copyGenome(double ** original, double ** &dest, options opt);
+
+
+// Copy planet does not allocate the dest
 void copyPlanet(specimen ** original, specimen ** dest, options opt);
 void cleanGenome(double ** genome, options opt); // Death, the result is null
 
 void savePlanet(char* filename, options opt, specimen ** planet);
 
 void randomMove(int tmp_x, int tmp_y, int L, int * dest_x, int * dest_y) ;
+
+void FreeGenome(double ** , options);
 #endif

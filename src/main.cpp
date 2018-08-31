@@ -3,40 +3,44 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "wator.hpp"
-#include "parse_input.h"
+#include "waTor.hpp"
+#include "parse_input.hpp"
+#include <getopt.h>
+
+#define DEBUG_M 1
 
 void PrintUsage(void);
 using namespace std;
 
 int main(int argc, char * argv[]) {
 
-  int opt = 0;
+  int cmd = 0;
   string input_file;
 
 
   // Parse the command line
-  opt = getopt(argc, argv, "i:h");
-  while (opt != -1) {
-    switch (opt) {
+  cmd = getopt(argc, argv, "i:h");
+  while (cmd != -1) {
+    switch (cmd) {
     case 'i':
-      input_file.assing(optarg);
+      input_file = optarg;
       break;
     case 'h':
       PrintUsage();
-      exit(0)
+      exit(0);
       break;
     default:
       PrintUsage();
       exit(EXIT_FAILURE);
+      break;
     }
-    opt = getopt(argc, argv, "i:h");
+    cmd = getopt(argc, argv, "i:h");
   }
 
 
   // Read the configuration file
   options opt;
-  opt = read_input(optarg);
+  opt = read_input(input_file);
 
   specimen ** configuration;
 
@@ -46,12 +50,17 @@ int main(int argc, char * argv[]) {
   N_fish0 = opt.rho_f * opt.L * opt.L;
   N_shark0 = opt.rho_s * opt.L * opt.L;
 
+  cout << "Starting the termalization..." << endl;
+  
   // Thermalize
   configuration = waTor(opt, opt.N_steps, N_fish0, N_shark0, configuration);
 
+  cout << "End of the thermalization ..." << endl;
+  
   char fname[256];
   for (int i = 0; i < opt.N_sim; ++i) {
 
+    if (DEBUG_M) cout << "Cycle " << i << endl;
     // Proceed with the simulation
     configuration = waTor(opt, opt.N_step_between, N_fish0, N_shark0, configuration, false, false);
     
@@ -67,4 +76,10 @@ int main(int argc, char * argv[]) {
     
   }
   cout << "Simulation done." << endl;
+}
+
+
+
+void PrintUsage(void) {
+  cout << "Alleluia" << endl;
 }

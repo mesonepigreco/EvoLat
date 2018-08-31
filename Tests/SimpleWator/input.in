@@ -1,0 +1,16 @@
+L = 4
+N = 2
+rho_f = 0.5
+rho_s = 0.5
+
+N_steps = 100
+N_sim = 10
+N_step_between =  10
+
+Dir_Name = "data"
+
+EntropicForces:
+{
+	m_fm = 0.5;
+	m_ff = 0.5;
+}

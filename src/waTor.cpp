@@ -14,10 +14,11 @@
 #define shark_rw_inibitor  0
 #define predation_inibitor  0
 
+#define DW 1
 
-specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_config, bool initialize = true, bool progress_bar = false){        
 
-  int N_step = opt.N_steps;
+specimen** waTor(options opt, int N_steps, int N_fish0, int N_shark0,   specimen **init_config, bool initialize = true, bool progress_bar = false){        
+
   int L = opt.L;
   int N_mutations = opt.N_mutations;
   
@@ -48,6 +49,7 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_confi
   int tmp_x, tmp_y;
   
   if(initialize){
+    if (DW) cout << "Initizzed" << endl;
     
     if(progress_bar){
       printf("Initializing fishes");
@@ -66,6 +68,8 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_confi
 	count++;
       };
     };
+
+    if (DW) cout << "Fish initialized" << endl;
     //setting sharks
     count=0;
     
@@ -84,16 +88,20 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_confi
 	count += 1;
       };	
     };
+    if (DW) cout << "Shark initialized" << endl;
   }else{
-    copyPlanet(init_config, planet, opt);
+    planet = init_config;
+    //copyPlanet(init_config, planet, opt);
   };
+
+  if (DW) cout << "Planet is ready for the sim." << endl;
   
   //print "running"
   // running time
   int print_all_counter = 0;
   double prob;
   
-  for(int t = 0; t < N_step; t++){
+  for(int t = 0; t < N_steps; t++){
     
     //Save the configuration
     if(progress_bar){
@@ -101,65 +109,79 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_confi
       //sys.stdout.flush();
     }
  
-    
+    if (DW) cout << "Sim step " << t <<  endl;
     //running a while cicle, in order to be sure that at each temporal step all specimen  move (in mean).
     for(int  j = 0; j< (L*L); j++){
-
+      if (DW) cout << "   -> parastep i = " << t << " j = " << j << " / " << L*L << endl; 
       
       // extrancting a position in the LxL lattice...
+
       tmp_x= rand() % L;
       tmp_y= rand() % L;
+
+
       
       IsSpecimentSelected = !(planet[tmp_x][tmp_y].species ==EMPTY);
       if(!IsSpecimentSelected){
 	continue;
       }
-      
+      if (DW) cout << "Selected (" << tmp_x << " "<<tmp_y << ") : " << planet[tmp_x][tmp_y].species << endl << "   === >";
       Site1_Species = planet[tmp_x][tmp_y].species;
       
       if( Site1_Species == FISH){
+
 	
 	Site1_Genes = planet[tmp_x][tmp_y].genome;
-	
+	if (DW) cout << "ABACAT1 " << Site1_Genes << endl;
 	p_move_f = GetSinglePheno(planet[tmp_x][tmp_y], 0, opt); //  np.mean(Site1_Genes[0,:])
+	if (DW) cout << "ABACAT2" << endl;
 	p_filiation_f = GetSinglePheno(planet[tmp_x][tmp_y], 1, opt); //np.mean(Site1_Genes[1,:])
 	prob = rand()/((double) RAND_MAX);
-	
 	if(prob <= (p_move_f+p_filiation_f)){
 	  
 	  randomMove(tmp_x,tmp_y,L, &newPos_x, &newPos_y);  
 	  Site2_Species = planet[newPos_x][newPos_y].species;
-	  
+	  if (DW) cout << " Move in ("<< newPos_x << " " << newPos_y <<")" << endl;	  
 	  
 	  if(Site2_Species == EMPTY && prob > p_move_f && prob <= (p_filiation_f+p_move_f) && fish_filiation_inibitor == 0){
 	    //filiation
-	    
+	    if (DW) cout << "     ====> Filiation" << endl;;
 	    Mythosis(planet[tmp_x][ tmp_y], opt, &planet[tmp_x][tmp_y], &planet[newPos_x][newPos_y]);
 	    N_fish_t += 1;
 	    
 	  }else if(Site2_Species == EMPTY && fish_rw_inibitor == 0){
 	    //fish rw
+	    if (DW) cout << "     ====> RW" << endl;
 	    planet[newPos_x][newPos_y].species = FISH;
 	    planet[newPos_x][newPos_y].genome = Site1_Genes;
 	    planet[tmp_x][tmp_y].species = EMPTY;
 	    planet[tmp_x][tmp_y].genome = NULL;
-	  };
-	};
+	  }
+	  else { if (DW) cout << "     =====> Occupied" <<  endl;}
+	} else { if (DW) cout << endl;}
       }else if(Site1_Species == SHARK){
-	
+
+	if (DW) cout << "SITIAO   " << planet[tmp_x][tmp_y].genome << endl;
 	Site1_Genes = planet[tmp_x][tmp_y].genome;
+	if (DW) cout << "ABACAT" << endl;
 	
 	p_move_s = GetSinglePheno(planet[tmp_x][tmp_y], 0, opt); //#np.mean(Site1_Genes[0,:])
+	if (DW) cout << "ABACAT1" << endl;
 	p_filiation_s = GetSinglePheno(planet[tmp_x][tmp_y], 1, opt); //#np.mean(Site1_Genes[1,:])
+	if (DW) cout << "ABACAT2" << endl;
 	p_death_s = GetSinglePheno(planet[tmp_x][tmp_y], 2, opt); //#np.mean(Site1_Genes[2,:])
-	
+	if (DW) cout << "ABACAT3" << endl;
 	prob_m = rand()/((double) RAND_MAX);
 	prob_f = rand()/((double) RAND_MAX);
 	prob_d = rand()/((double) RAND_MAX);
+
+	if (DW) cout << " m:" << prob_m << " f:" << prob_f << " d:" << prob_d << endl;
 	
 	if(prob_m >= p_move_s && prob_d < p_death_s){
-	  //shark spontaneous death 
+	  //shark spontaneous death
+	  if (DW) cout << " Death killed " << planet[tmp_x][tmp_y].genome  <<  endl;
 	  planet[tmp_x][tmp_y].species = EMPTY;
+	  FreeGenome(planet[tmp_x][tmp_y].genome, opt);
 	  planet[tmp_x][tmp_y].genome = NULL;
 	  
 	  N_shark_t -= 1;
@@ -169,40 +191,45 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_confi
 	  Site2_Species = planet[newPos_x][newPos_y].species;
 	  
 	  // PAY ATTENTION! sharks can NOT die when the meet other sharks!
-	  
+	  if (DW) cout << " move in ("<< newPos_x << " " << newPos_y <<") ";
 	  if(Site2_Species == FISH && prob_f <= p_filiation_s && shark_filiation_inibitor == 0  && predation_inibitor == 0){
-	    //shark filiation with predation
+	    //shark filiation with predatio
+	    if (DW) cout << " Filiation" << endl;
 	    Mythosis(planet[tmp_x][tmp_y], opt, &planet[tmp_x][tmp_y], &planet[newPos_x][newPos_y]);
 	    N_shark_t += 1;
 	    N_fish_t -= 1;
 	    
 	  }else if(Site2_Species == FISH && predation_inibitor == 0){
-	    
+	    if (DW) cout << " Predation killed " << planet[newPos_x][newPos_y].genome <<  endl;
 	    //shark predation
 	    planet[newPos_x][newPos_y].species = SHARK;
 	    planet[tmp_x][tmp_y].species =  EMPTY;
-	    
+	    FreeGenome(planet[newPos_x][newPos_y].genome, opt);
 	    planet[newPos_x][newPos_y].genome = Site1_Genes;
 	    planet[tmp_x][tmp_y].genome = NULL;
 	    
 	    N_fish_t -= 1;
 	  }else if(Site2_Species == EMPTY && shark_rw_inibitor == 0){
-	    
+	    if (DW) cout << " RW" << endl;
 	    //shark rw
 	    planet[newPos_x][newPos_y].species = SHARK;
+	    
 	    planet[tmp_x][tmp_y].species = EMPTY;
 	    planet[newPos_x][newPos_y].genome = Site1_Genes;
+	    
 	    planet[tmp_x][tmp_y].genome = NULL;
 	    
 	    
 	    if(prob_d < (p_death_s)){
+	      if (DW) cout << " Death killed " << planet[newPos_x][newPos_y].genome <<  endl;
 	      //shark death 
 	      planet[newPos_x][newPos_y].species = EMPTY;
+	      FreeGenome(planet[newPos_x][newPos_y].genome, opt);
 	      planet[newPos_x][newPos_y].genome  = NULL;
 	      N_shark_t -= 1;
 	    };
-	  };
-	};
+	  } else if (DW) cout << endl;
+	} else if (DW) cout << endl;
       };
     };
     
@@ -210,4 +237,29 @@ specimen** waTor(options opt, int N_fish0, int N_shark0,   specimen **init_confi
     N_shark= N_shark_t;
   }
   return planet;
+}
+
+
+
+void savePlanet(char * fname, options opt, specimen** planet) {
+  FILE * fp;
+  fp = fopen(fname, "w");
+  if (!fp) {
+    cerr << "ERROR, cannot access to " << fname << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  fprintf(fp, "# Species; X; Y; Pm; Pf; Pd\n");
+  for (int x = 0; x < opt.L; x++) {
+    for (int y = 0; y < opt.L; ++y) {
+      if (planet[x][y].species != EMPTY) {
+	
+	fprintf(fp, "%d %d %d %.4f %.4f %.4f\n",
+		planet[x][y].species, x, y,
+		GetSinglePheno(planet[x][y], 0, opt),
+		GetSinglePheno(planet[x][y], 1, opt),
+		GetSinglePheno(planet[x][y], 2, opt));
+      }
+    }
+  }
 }
