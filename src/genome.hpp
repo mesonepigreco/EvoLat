@@ -31,4 +31,6 @@ void savePlanet(char* filename, options opt, specimen ** planet);
 void randomMove(int tmp_x, int tmp_y, int L, int * dest_x, int * dest_y) ;
 
 void FreeGenome(double ** , options);
+
+void DestroyAll(options opt, specimen** planet);
 #endif

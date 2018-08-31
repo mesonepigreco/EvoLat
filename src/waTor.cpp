@@ -14,7 +14,7 @@
 #define shark_rw_inibitor  0
 #define predation_inibitor  0
 
-#define DW 1
+#define DW 0
 
 
 specimen** waTor(options opt, int N_steps, int N_fish0, int N_shark0,   specimen **init_config, bool initialize = true, bool progress_bar = false){        

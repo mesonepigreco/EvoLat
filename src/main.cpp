@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include "waTor.hpp"
 #include "parse_input.hpp"
+#include "genome.hpp"
 #include <getopt.h>
 
-#define DEBUG_M 1
+#define DEBUG_M 0
 
 void PrintUsage(void);
 using namespace std;
@@ -75,6 +76,9 @@ int main(int argc, char * argv[]) {
     savePlanet(fname, opt, configuration);
     
   }
+
+  cout << "Destruction" << endl;
+  DestroyAll(opt, configuration);
   cout << "Simulation done." << endl;
 }
 

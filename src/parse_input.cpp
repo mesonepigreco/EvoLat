@@ -78,6 +78,16 @@ options read_input(string filename) {
     exit(EXIT_FAILURE);
   }
   
+  opt.N_mutations = 0;
+  try {
+    opt.N_mutations = cfg.lookup("N_mutations");
+  } catch (const SettingNotFoundException &errorfound) {
+  } catch (const SettingException &errortype){
+    cerr << "Error, the setting " << errortype.getPath() << " is of the wrong type." << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  
   opt.EVOLUTION_POWER_EXP = -2;
   try {
     double pe =  cfg.lookup("EVOLUTION_POWER_EXP");

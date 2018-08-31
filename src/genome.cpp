@@ -1,6 +1,22 @@
 #include "genome.hpp"
-#define DEBUG_GEN 1
+#include "math.h"
+#define DEBUG_GEN 0
 
+
+int get_poisson(double mean) {
+  double L = exp(-mean);
+  int k = 0;
+  double p = 1;
+  double u;
+
+  do {
+    k++;
+    u = rand() / (double) RAND_MAX;
+    p *= u;
+  } while (p > L);
+
+  return k -1;
+}
 
 void genomeInitialAssignment(int Species, options opt, double ** &genome) {
   // Initialize the array
@@ -54,7 +70,7 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   int kind = parent.species;
 
   // Get the number of mutations
-  poisson_distribution<int> pdist(opt.N_mutations);
+  //poisson_distribution<int> pdist(opt.N_mutations);
 
   g1->species = kind;
   g2->species = kind;
@@ -72,7 +88,8 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   int pheno;
 
   // Mutate the first genome
-  int N_mut = pdist(opt.gen);
+  int N_mut = get_poisson(opt.N_mutations);
+  if (DEBUG_GEN)  cout << "Extracted " << N_mut << " mutations." <<endl;
   for (int i = 0; i < N_mut; ++i) {
     // Get the mutating gene
     gene_x = rand() % opt.N;
@@ -85,7 +102,7 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   }
   
   // Mutate the second genome
-  N_mut = pdist(opt.gen);
+  N_mut = get_poisson(opt.N_mutations);
   for (int i = 0; i < N_mut; ++i) {
     // Get the mutating gene
     gene_x = rand() % opt.N;
@@ -187,4 +204,23 @@ void FreeGenome(double ** genome, options opt) {
     free(genome[i]);
   }
   free(genome);
+}
+
+
+void DestroyAll(options opt, specimen** planet) {
+  for (int x = 0; x <  opt.L; ++x) {
+    for (int y = 0; y < opt.L; ++y) {
+      if (planet[x][y].species == EMPTY) {
+	if (planet[x][y].genome != NULL) {
+	  cerr << "ERROR, site (" << x << " " << y << ") is EMPTY but not NULL" << endl;
+	  exit(EXIT_FAILURE);
+	}
+      } else {
+	FreeGenome(planet[x][y].genome, opt);
+      }
+    }
+  }
+
+  cout << "DISTRUCTOR FOUND NO ERRORS" << endl;
+  exit(0);
 }

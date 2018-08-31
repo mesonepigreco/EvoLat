@@ -44,8 +44,6 @@ typedef struct {
   // The starting phenotypes
   double p_ff, p_sf, p_sd, p_fm, p_sm;
 
-  // Here the random generator
-  std::default_random_engine gen; // The
 } options;
 
 

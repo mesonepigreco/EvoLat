@@ -1,11 +1,13 @@
-L = 4
-N = 2
+L = 64
+N = 1
 rho_f = 0.5
 rho_s = 0.5
 
-N_steps = 100
+N_mutations = 0.
+
+N_steps = 1000
 N_sim = 10
-N_step_between =  10
+N_step_between =  200
 
 Dir_Name = "data"
 
@@ -13,4 +15,13 @@ EntropicForces:
 {
 	m_fm = 0.5;
 	m_ff = 0.5;
+}
+
+InitialPhenotypes:
+{
+	p_ff = 0.2;
+	p_fm = 0.8;
+	p_sm = 0.7;
+	p_sf = 1.;
+	p_sd = 0.3;
 }
