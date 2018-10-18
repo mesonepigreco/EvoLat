@@ -137,7 +137,7 @@ specimen** waTor(options opt, int N_steps, int N_fish0, int N_shark0,   specimen
 	if (DW) cout << "ABACAT2" << endl;
 	p_filiation_f = GetSinglePheno(planet[tmp_x][tmp_y], 1, opt); //np.mean(Site1_Genes[1,:])
 	prob = rand()/((double) RAND_MAX);
-	if(prob <= (p_move_f+p_filiation_f)){
+	if(prob <= (p_move_f+p_filiation_f)){ // IN CASE p_move_f + p_filiation_f > 1 ; p_move_f dominates
 	  
 	  randomMove(tmp_x,tmp_y,L, &newPos_x, &newPos_y);  
 	  Site2_Species = planet[newPos_x][newPos_y].species;
