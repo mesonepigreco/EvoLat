@@ -72,9 +72,14 @@ int main(int argc, char * argv[]) {
     sprintf(fname, "%s/conf%05d.dat", opt.Dir_Name.c_str(), i);
 
     // Save the configuration
-    cout << "Saving in file " << fname << endl;
+    cout << "Saving planet in file " << fname << endl;
     savePlanet(fname, opt, configuration);
     
+    // Save the average genome
+    fname[0] = 0;
+    sprintf(fname, "%s/genom%05d.dat", opt.Dir_Name.c_str(), i);
+    cout << "Saving genome in file " << fname << endl;
+    SaveGenome(fname, opt, configuration);
   }
 
   cout << "Destruction" << endl;

@@ -262,4 +262,53 @@ void savePlanet(char * fname, options opt, specimen** planet) {
       }
     }
   }
+  fclose(fp);
+}
+
+void SaveGenome(char * fname, options opt, specimen ** planet) {
+  double * fish_phenos = new double[opt.N * 3];
+  double * shark_phenos = new double[opt.N * 3];
+
+  for (int i = 0; i < opt.N*3; ++i) {
+    fish_phenos[i] = 0;
+    shark_phenos[i] = 0;
+  }
+
+  int N_fishes = 0;
+  int N_sharks = 0;
+  for (int x = 0; x < opt.L; ++x) {
+    for (int y =0; y < opt.L; ++y) {
+      if (planet[x][y].species == FISH) {
+        N_fishes++;
+        for (int i = 0; i < 3*opt.N; ++i) 
+          fish_phenos[i] += planet[x][y].genome[i / opt.N][i % opt.N];
+      } else if (planet[x][y].species == SHARK) {
+        N_sharks++;
+        for (int i = 0; i < 3*opt.N; ++i) 
+          shark_phenos[i] += planet[x][y].genome[i / opt.N][i % opt.N];
+      }
+    }
+  }
+
+
+  FILE * fp;
+  fp = fopen(fname, "w");
+  fprintf(fp, "# Fishes average genome (first 3 rows) followed by sharks (last 3 rows)\n");
+
+  for (int i = 0; i < 3*opt.N; ++i) {
+    if (i % opt.N == 0) fprintf(fp, "\n");
+    fprintf(fp, "%16.8lf ", fish_phenos[i] / N_fishes);
+  }
+
+  for (int i = 0; i < 3*opt.N; ++i) {
+    if (i % opt.N == 0) fprintf(fp, "\n"); 
+    fprintf(fp, "%16.8f ", shark_phenos[i] / N_sharks);
+  }
+
+  cout << "N_fishes = " << N_fishes<< " N_sharks = " << N_sharks <<endl;
+  fprintf(fp, "\n");
+
+  fclose(fp);
+  delete[] fish_phenos;
+  delete[] shark_phenos;
 }

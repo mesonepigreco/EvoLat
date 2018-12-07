@@ -70,8 +70,12 @@ options read_input(string filename) {
 
   opt.EVOLUTION_EXP_CUTOFF = 20;
   try {
-    string s = cfg.lookup("EVOLUTION_EXP_CUTOFF");
-    opt.EVOLUTION_EXP_CUTOFF = s;
+    double cut = cfg.lookup("EVOLUTION_EXP_CUTOFF");
+    opt.EVOLUTION_EXP_CUTOFF = cut;
+    if (opt.EVOLUTION_TYPE.compare("exp") != 0) {
+      cerr << "Error, EVOLUTION_TYPE does not match with EXP_CUTOFF" << endl;
+      throw "";
+    }
   } catch (const SettingNotFoundException &errorfound) {
   } catch (const SettingException &errortype){
     cerr << "Error, the setting " << errortype.getPath() << " is of the wrong type." << endl;
@@ -92,6 +96,13 @@ options read_input(string filename) {
   try {
     double pe =  cfg.lookup("EVOLUTION_POWER_EXP");
     opt.EVOLUTION_POWER_EXP =pe;
+    opt.genome_norm = 0;
+    for (int i = 0; i < opt.N; ++i) opt.genome_norm += pow(i+1, pe);
+
+    if (opt.EVOLUTION_TYPE.compare("power") != 0) {
+      cerr << "Error, EVOLUTION_TYPE does not match with POWER_EXP" << endl;
+      throw "";
+    }
   } catch (const SettingNotFoundException &errorfound) {
   } catch (const SettingException &errortype){
     cerr << "Error, the setting " << errortype.getPath() << " is of the wrong type." << endl;

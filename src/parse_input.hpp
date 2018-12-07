@@ -35,9 +35,10 @@ typedef struct {
   string Dir_Name; // The directory on which the data are saved
 
   string EVOLUTION_TYPE; // Can be "uniform", "exp" or "power"
-  string EVOLUTION_EXP_CUTOFF;
-  string EVOLUTION_POWER_EXP;
-
+  double EVOLUTION_EXP_CUTOFF;
+  double EVOLUTION_POWER_EXP;
+  double genome_norm;
+  
   // The entropic forces here
   double m_fm, m_ff, m_sm, m_sf, m_sd;
 

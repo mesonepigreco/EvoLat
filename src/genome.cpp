@@ -128,12 +128,18 @@ double GetSinglePheno(specimen element, int phenotype, options opt) {
       ret += element.genome[phenotype][ i];
     }
     ret /= opt.N;
+  } else if (opt.EVOLUTION_TYPE.compare("power") == 0) {
+    ret = 0;
+    for (int i = 0; i < opt.N; ++i) 
+      ret += element.genome[phenotype][i] * pow(i+1, opt.EVOLUTION_POWER_EXP); 
+    ret /= opt.genome_norm;
   } else {
     cerr << "ERROR, EVOLUTION_TYPE = " << opt.EVOLUTION_TYPE << " not yet implemented." << endl;
     exit(EXIT_FAILURE);
   }
   return ret;
 }
+
 
 
 void randomMove(int tmp_x, int tmp_y, int L, int * dest_x, int * dest_y) {
