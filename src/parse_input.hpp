@@ -30,7 +30,8 @@ typedef struct {
   int N_steps; // Thermalization steps
   int N_sim; // Number of configuration to extract after the thermalization
   int N_step_between; // Number of steps between two extraction
-  double N_mutations; // The average number of mutation per turn.
+  double N_mutations_fishes; // The average number of mutation per turn.
+  double N_mutations_sharks; // The average number of mutation per turn.
 
   string Dir_Name; // The directory on which the data are saved
 
@@ -54,4 +55,10 @@ typedef struct {
  * an options structure
  */
 options read_input(string filename);
+
+/*
+ * Print the options on the standard output
+ */
+void PrintOptions(options opt);
+
 #endif

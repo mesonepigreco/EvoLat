@@ -20,7 +20,7 @@
 specimen** waTor(options opt, int N_steps, int N_fish0, int N_shark0,   specimen **init_config, bool initialize = true, bool progress_bar = false){        
 
   int L = opt.L;
-  int N_mutations = opt.N_mutations;
+  //int N_mutations = opt.N_mutations;
   
   //equating specimen numbers
   int  N_fish=N_fish0;
