@@ -23,3 +23,9 @@ You can edit the Makefile to include the libconfig++ headers installation path, 
 
 The code will be installed in the bin directory. It needs an inputfile in json format, as readed by the libconfig library.
 An example input file can be found into the Test directory
+
+To execute the code with the input.in input file, run
+```bash
+bin/wator.exe -i input.in 
+```
+
