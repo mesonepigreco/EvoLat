@@ -82,9 +82,21 @@ options read_input(string filename) {
     exit(EXIT_FAILURE);
   }
   
-  opt.N_mutations = 0;
+  opt.N_mutations_fishes = 0;
+  opt.N_mutations_sharks = 0;
   try {
-    opt.N_mutations = cfg.lookup("N_mutations");
+    if (cfg.exists("N_mutations")) {
+      opt.N_mutations_fishes = cfg.lookup("N_mutations");
+      opt.N_mutations_sharks = cfg.lookup("N_mutations");
+    }
+
+    if (cfg.exists("N_mut_sharks")) {
+      opt.N_mutations_sharks = cfg.lookup("N_mut_sharks");
+    }
+
+    if (cfg.exists("N_mut_fishes")) {
+      opt.N_mutations_fishes = cfg.lookup("N_mut_fishes");
+    }
   } catch (const SettingNotFoundException &errorfound) {
   } catch (const SettingException &errortype){
     cerr << "Error, the setting " << errortype.getPath() << " is of the wrong type." << endl;
@@ -129,4 +141,39 @@ options read_input(string filename) {
     exit(EXIT_FAILURE);
   }
   return opt;
+}
+
+
+void PrintOptions(options opt) {
+  // This function prints all the options in standard output.
+  // In this way one can check if everithing has been readed correctly
+
+  cout << std::fixed;
+  cout << " ===== INPUT OPTIONS ===== " << endl;
+  cout << " SYSTEM SIZE: " << opt.L << endl;
+  cout << " GENOME SIZE: " << opt.N << endl;
+  cout << " PHENOTYPE NUMBERS: " << opt.n << endl;
+  cout << " INITIAL FISH DENSITY: " << opt.rho_f << endl;
+  cout << " INITIAL SHARK DENSITY: " << opt.rho_f << endl;
+  cout << " THERMALIZATION STEPS: " << opt.N_steps << endl;
+  cout << " TOTAL NUMBER OF CONFIGURATIONS: " << opt.N_sim << endl;
+  cout << " NUMBER OF STEPS BETWEEN TWO CONFIG: " << opt.N_step_between << endl;
+  cout << endl << std::scientific;
+  cout << " FISH MUTATION RATE: " << opt.N_mutations_fishes << endl;
+  cout << " SHARK MUTATION RATE: " << opt.N_mutations_sharks << endl;
+  cout << " EVOLUTION TYPE: " << opt.EVOLUTION_TYPE << endl;
+  if (opt.EVOLUTION_TYPE == "exp") 
+    cout << "   EXPONENT CUTOFF: " << opt.EVOLUTION_EXP_CUTOFF << endl;
+  else if (opt.EVOLUTION_TYPE == "power")
+    cout << "   POWER EXPONENT: " << opt.EVOLUTION_POWER_EXP << endl;
+  
+  cout << endl;
+  cout << " INTIIAL CONDITIONS (p_f, p_m, p_d)" << endl;
+  cout << " FISHES: " << opt.p_ff << "\t" << opt.p_fm << "\t" << 0 << endl;
+  cout << " SHARKS: " << opt.p_sf << "\t" << opt.p_sm << "\t" << opt.p_sd << endl; 
+
+  cout << " ENTROPIC FORCES (m_f, m_m, m_d)" << endl;
+  cout << " FISHES: " << opt.m_ff << "\t" << opt.m_fm << "\t" << 0 << endl;
+  cout << " SHARKS: " << opt.m_sf << "\t" << opt.m_sm << "\t" << opt.m_sd << endl; 
+  cout << endl;
 }

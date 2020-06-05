@@ -59,6 +59,9 @@ int main(int argc, char * argv[]) {
   options opt;
   opt = read_input(input_file);
 
+  // Print the options on standard output
+  PrintOptions(opt);
+
   specimen ** configuration;
 
   // Get the initial fishes and sharks

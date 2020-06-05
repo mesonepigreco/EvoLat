@@ -87,8 +87,13 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   int gene_x;
   int pheno;
 
+  // Get the correct number of mutations
+  double N_mut_av = 0;
+  if (kind == FISH) N_mut_av = opt.N_mutations_fishes;
+  if (kind == SHARK) N_mut_av = opt.N_mutations_sharks;
+
   // Mutate the first genome
-  int N_mut = get_poisson(opt.N_mutations);
+  int N_mut = get_poisson(N_mut_av);
   if (DEBUG_GEN)  cout << "Extracted " << N_mut << " mutations." <<endl;
   for (int i = 0; i < N_mut; ++i) {
     // Get the mutating gene
@@ -102,7 +107,7 @@ void Mythosis(specimen parent, options opt, specimen * g1, specimen * g2) {
   }
   
   // Mutate the second genome
-  N_mut = get_poisson(opt.N_mutations);
+  N_mut = get_poisson(N_mut_av);
   for (int i = 0; i < N_mut; ++i) {
     // Get the mutating gene
     gene_x = rand() % opt.N;
