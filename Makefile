@@ -2,12 +2,7 @@
 GSLFLAGS = -lgsl -lgslcblas
 CPPFLAGS = -std=c++11
 LIBS=`pkg-config --libs libconfig++` -lm
-<<<<<<< HEAD
-#GPP=/bin/g++
-GPP=/usr/bin/g++
-=======
 GPP=g++
->>>>>>> bf6039cd5b010a4067db325fd146a621c4c03da0
 
 bin/wator.exe: src/main.cpp lib/parse_input.o lib/genome.o lib/wator.o
 	$(GPP) -O3 -fPIC $(CPPFLAGS) src/main.cpp  -o bin/wator.exe lib/wator.o lib/parse_input.o lib/genome.o $(LIBS) 
