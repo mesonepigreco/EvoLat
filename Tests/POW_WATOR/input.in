@@ -1,0 +1,30 @@
+L = 64
+N = 50
+rho_f = 0.5
+rho_s = 0.5
+EVOLUTION_POWER_EXP = -1.1
+EVOLUTION_TYPE = "power"
+
+N_mutations = 0.5
+
+N_steps = 1000
+N_sim = 10
+N_step_between =  400
+
+Dir_Name = "data"
+
+EntropicForces:
+{
+	m_fm = 0.5;
+	m_ff = 0.5;
+	m_sd = 0.96;
+}
+
+InitialPhenotypes:
+{
+	p_ff = 0.2;
+	p_fm = 0.8;
+	p_sm = 0.7;
+	p_sf = 1.;
+	p_sd = 0.2;
+}

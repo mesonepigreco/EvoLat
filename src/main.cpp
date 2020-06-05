@@ -7,6 +7,8 @@
 #include "parse_input.hpp"
 #include "genome.hpp"
 #include <getopt.h>
+#include <time.h>
+#include <fstream>
 
 #define DEBUG_M 0
 
@@ -18,6 +20,20 @@ int main(int argc, char * argv[]) {
   int cmd = 0;
   string input_file;
 
+  // Initialize the seed for the random generator
+  unsigned int random_seed;
+  ifstream file ("/dev/urandom", ios::binary);
+  if (file.is_open()) {
+    char * memblock;
+    int size = sizeof(int);
+    memblock = new char [size];
+    file.read (memblock, size);
+    file.close();
+    random_seed = *reinterpret_cast<int*>(memblock);
+    delete[] memblock;
+  } else{ random_seed = time(0);}
+
+  srand(random_seed);
 
   // Parse the command line
   cmd = getopt(argc, argv, "i:h");
